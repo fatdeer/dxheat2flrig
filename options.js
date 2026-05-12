@@ -17,7 +17,6 @@ function saveOptions() {
         }, 750);
 
 
-        chrome.runtime.sendMessage({"message": "loadOptions"});
 
 
     })
