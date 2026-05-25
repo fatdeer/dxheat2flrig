@@ -1,7 +1,7 @@
 {
   "name": "DJ7NTs dxheat2flrig",
   "description": "Click on QRG at DXHeat and control ur flrig",
-  "version": "1.2",
+  "version": "1.3",
   "permissions": [
     "storage"
   ],
@@ -32,7 +32,8 @@
       "16": "icons/icon16.png",
       "48": "icons/icon48.png"
     },
-    "default_title": "dxheat2flrig"
+    "default_title": "dxheat2flrig",
+    "default_popup": "popup.html"
   },
   "icons": {
     "16": "icons/icon16.png",

@@ -10,22 +10,48 @@ function saveOptions() {
     chrome.storage.sync.set({
         options: options
     }, () => {
-        let statusElement = document.getElementById('status');
-        statusElement.classList.add('show');
-        setTimeout(function () {
-            statusElement.classList.remove('show');
-        }, 750);
-    })
+        showAlert('status', 'alert-success', 'Options saved.');
+    });
+}
 
+function testConnection() {
+    const testEl = document.getElementById('test-status');
+    testEl.className = 'alert alert-info show';
+    testEl.textContent = 'Testing connection...';
+
+    chrome.runtime.sendMessage({ message: 'testConnection' }, (response) => {
+        if (response && response.ok) {
+            testEl.className = 'alert alert-success show';
+            testEl.textContent = 'Connected to FLRig ' + (response.value || '') + '.';
+        } else {
+            testEl.className = 'alert alert-error show';
+            testEl.textContent = 'Connection failed: ' + (response ? response.error : 'No response from extension.');
+        }
+        setTimeout(() => {
+            testEl.classList.remove('show');
+        }, 4000);
+    });
+}
+
+function showAlert(id, cssClass, text) {
+    const el = document.getElementById(id);
+    el.className = 'alert ' + cssClass + ' show';
+    el.textContent = text;
+    setTimeout(() => {
+        el.classList.remove('show');
+    }, 1500);
 }
 
 function restoreOptions() {
     let defaultOptions = {
         'flrig-uri': 'http://127.0.0.1:12345/',
-        'digi-mode': 'DATA-U',
         'cw-mode': 'CW-L',
-        'ssb-mode': 'USB'
-    }
+        'cw-bw': '500',
+        'ssb-mode': 'USB',
+        'ssb-bw': '2400',
+        'digi-mode': 'DATA-U',
+        'digi-bw': '3000'
+    };
 
     chrome.storage.sync.get({
         options: defaultOptions,
@@ -35,9 +61,8 @@ function restoreOptions() {
             if (el) el.value = value;
         }
     });
-
 }
-
 
 document.addEventListener('DOMContentLoaded', restoreOptions);
 document.getElementById('save-btn').addEventListener('click', saveOptions);
+document.getElementById('test-btn').addEventListener('click', testConnection);
