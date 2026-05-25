@@ -1,20 +1,44 @@
-# Chrome/Chromium-Extension to set the VFO on your Rig with one Click at dxheat.com on the QRG
+# dxheat2flrig
 
-Now also available as Firefox-Extension. Check "Releases" on the right.
+A Chrome/Chromium extension that lets you click a frequency on [dxheat.com](https://dxheat.com) and instantly tune your radio via [FLRig](http://www.w1hkj.com/flrig-help/).
 
-Quick hack / No warranty :)
+Also available as a Firefox extension — check the [Releases](../../releases) page.
 
-Prerequisites:
-* TRX :)
-* FLRig (Default XML-RPC-Port: 12345 / Could be customized via Options)
-* Chrome/Chromium
+## How it works
 
-Howto:
-* ~~Simply edit "bg.js" an adjust the Port/URL of your flrig instance (Line 1)~~
-* Go to Chrome Extensions and turn "Dev Mode" (upper right) on.
-* Point to "Load unpacked extension" (upper left)
-* Choose Folder with Extension (this folder)
-* Go to Options-Page of the Extension (tnx to DG7PX for that) and adjust URL/Port of your FLRig
-* Enjoy
+1. The extension adds a click handler to frequency cells on dxheat.com.
+2. When you click a frequency, it sends an XML-RPC command to your local FLRig instance to:
+   - Set the operating mode (CW, SSB, Digital — configurable)
+   - Set the VFO frequency
 
-### Plugin is under development. If you wish to upgrade simply **remove** the old Version (Chrome / Extensions / Remove) and register the new one
+## Prerequisites
+
+- A transceiver connected to FLRig
+- FLRig running with XML-RPC enabled (default port: **12345**)
+- Chrome or Chromium (v102+ for Manifest V3 support)
+
+## Installation
+
+1. Download or clone this repository.
+2. Open Chrome and navigate to `chrome://extensions/`.
+3. Enable **Developer mode** (toggle in the upper right).
+4. Click **Load unpacked** and select this folder.
+5. Click the extension's **Options** (or right-click the toolbar icon > Options) to configure:
+   - **FLRig URI** — default `http://127.0.0.1:12345/`
+   - **CW Mode** — sent for CW spots (default: `CW-L`)
+   - **SSB Mode** — sent for SSB/Phone spots (default: `USB`)
+   - **Digital Mode** — sent for digital spots (default: `DATA-U`)
+
+## Upgrading
+
+Remove the old version from `chrome://extensions/` and load the new one.
+
+## Troubleshooting
+
+- Open the service worker console (Extensions page > Details > "Inspect views: service worker") to see error messages.
+- Make sure FLRig's XML-RPC server is listening and accessible from `127.0.0.1` (or whichever address you configured).
+- If you use a non-loopback address (e.g. `192.168.x.x`), you'll need to add it to the extension's `host_permissions` in `manifest.json` and reload.
+
+## License
+
+No explicit license. Originally by DJ7NT (Joerg). Use at your own risk.

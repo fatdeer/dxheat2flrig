@@ -1,7 +1,8 @@
 const DEFAULT_OPTIONS = {
     'flrig-uri': 'http://127.0.0.1:12345/',
     'digi-mode': 'DATA-U',
-    'cw-mode': 'CW-L'
+    'cw-mode': 'CW-L',
+    'ssb-mode': 'USB'
 };
 
 function getOptions() {
@@ -57,6 +58,8 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
                 mode = opts['cw-mode'];
             } else if (mode === 'DIGITAL') {
                 mode = opts['digi-mode'];
+            } else if (mode === 'SSB' || mode === 'PHONE') {
+                mode = opts['ssb-mode'];
             }
             await setMode(uri, mode);
             await setVfo(uri, request.qrg);

@@ -11,14 +11,10 @@ function saveOptions() {
         options: options
     }, () => {
         let statusElement = document.getElementById('status');
-        statusElement.classList.remove('d-none');
+        statusElement.classList.add('show');
         setTimeout(function () {
-            statusElement.classList.add('d-none');
+            statusElement.classList.remove('show');
         }, 750);
-
-
-
-
     })
 
 }
@@ -27,14 +23,16 @@ function restoreOptions() {
     let defaultOptions = {
         'flrig-uri': 'http://127.0.0.1:12345/',
         'digi-mode': 'DATA-U',
-        'cw-mode': 'CW-L'
+        'cw-mode': 'CW-L',
+        'ssb-mode': 'USB'
     }
 
     chrome.storage.sync.get({
         options: defaultOptions,
     }, (items) => {
         for (const [key, value] of Object.entries(items.options)) {
-            document.getElementById(key).value = value;
+            const el = document.getElementById(key);
+            if (el) el.value = value;
         }
     });
 
