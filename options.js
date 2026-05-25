@@ -10,26 +10,26 @@ function saveOptions() {
     chrome.storage.sync.set({
         options: options
     }, () => {
-        showAlert('status', 'alert-success', 'Options saved.');
+        showAlert('status', 'alert-success', '设置已保存');
     });
 }
 
 function testConnection() {
     const testEl = document.getElementById('test-status');
     testEl.className = 'alert alert-info show';
-    testEl.textContent = 'Testing connection...';
+    testEl.textContent = '正在测试连接...';
 
     chrome.runtime.sendMessage({ message: 'testConnection' }, (response) => {
         if (response && response.ok) {
             testEl.className = 'alert alert-success show';
-            testEl.textContent = 'Connected to FLRig ' + (response.value || '') + '.';
+            testEl.textContent = '连接成功！FLRig 版本: ' + (response.value || '未知');
         } else {
             testEl.className = 'alert alert-error show';
-            testEl.textContent = 'Connection failed: ' + (response ? response.error : 'No response from extension.');
+            testEl.textContent = '连接失败: ' + (response ? response.error : '扩展无响应，请检查 Service Worker 是否正常运行。');
         }
         setTimeout(() => {
             testEl.classList.remove('show');
-        }, 4000);
+        }, 5000);
     });
 }
 
@@ -39,7 +39,7 @@ function showAlert(id, cssClass, text) {
     el.textContent = text;
     setTimeout(() => {
         el.classList.remove('show');
-    }, 1500);
+    }, 2000);
 }
 
 function restoreOptions() {

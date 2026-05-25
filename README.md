@@ -1,76 +1,111 @@
-# dxheat2flrig
+# DXHeat 一键调频 (dxheat2flrig)
+
+在 [DXHeat.com](https://dxheat.com) 上点击频率，一键通过 [FLRig](http://www.w1hkj.com/flrig-help/) 控制电台调谐。
+
+同时提供 Firefox 版本，请查看 [Releases](../../releases) 页面。
+
+## 功能特性
+
+- **一键调谐** - 点击 DXHeat 上任意频率，自动设置电台 VFO
+- **自动切换模式** - CW / SSB / Digital 模式自动映射为你配置的 FLRig 模式名称
+- **带宽控制** - 调谐时自动设置滤波器带宽（可配置，设为 0 跳过）
+- **连接状态指示** - 工具栏图标显示绿色 "OK"（已连接）或红色 "!"（未连接）
+- **状态弹窗** - 点击工具栏图标查看当前频率、模式和 FLRig 版本
+- **测试连接** - 在设置页面验证 FLRig 是否可达
+- **调试日志** - 所有 XML-RPC 通信过程都输出到浏览器控制台
+
+## 工作原理
+
+1. 扩展在 DXHeat.com 的频率单元格上注入点击事件监听器
+2. 点击频率后，依次向本地 FLRig 发送 XML-RPC 命令：
+   - `rig.set_modeA` - 设置工作模式
+   - `rig.set_bwA` - 设置滤波器带宽（若已配置）
+   - `main.set_frequency` - 设置 VFO 频率
+3. 弹窗面板通过 `main.get_frequency`、`rig.get_modeA`、`main.get_version` 回读状态
+
+## 环境要求
+
+- 电台通过 FLRig 控制
+- FLRig 已启动并开启 XML-RPC（默认端口 **12345**）
+- Chrome 或 Chromium（v102+ 支持 Manifest V3）
+
+## 安装方法
+
+1. 下载或克隆本仓库
+2. 打开 Chrome，进入 `chrome://extensions/`
+3. 开启右上角的 **开发者模式**
+4. 点击 **加载已解压的扩展程序**，选择本文件夹
+5. 右键点击工具栏图标 > **选项**，配置 FLRig 连接信息
+
+## 配置说明
+
+| 选项 | 默认值 | 说明 |
+|------|--------|------|
+| FLRig 地址 | `http://127.0.0.1:12345/` | FLRig 的 XML-RPC 服务端点 |
+| CW 模式 | `CW-L` | CW 频点对应的 FLRig 模式名 |
+| CW 带宽 | `500` | CW 模式的滤波器带宽 (Hz)，0 = 不设置 |
+| SSB 模式 | `USB` | SSB/话音频点对应的 FLRig 模式名 |
+| SSB 带宽 | `2400` | SSB 模式的滤波器带宽 (Hz)，0 = 不设置 |
+| Digital 模式 | `DATA-U` | 数字模式频点对应的 FLRig 模式名 |
+| Digital 带宽 | `3000` | 数字模式的滤波器带宽 (Hz)，0 = 不设置 |
+
+## 升级方法
+
+在 `chrome://extensions/` 中移除旧版本，重新加载新版本即可。
+
+## 故障排查
+
+- **红色 "!" 徽标**：FLRig 不可达。检查 FLRig 是否运行、设置中的地址是否正确。
+- **查看日志**：扩展页面 > 详情 > "检查视图: Service Worker"，查看所有 XML-RPC 调用和响应的详细日志。
+- **非本机地址**：若 FLRig 运行在其他机器（如 `192.168.x.x`），需在 `manifest.json` 的 `host_permissions` 中添加对应地址，然后重新加载扩展。
+- **测试连接**：在设置页面点击"测试连接"按钮验证配置。
+
+## FLRig XML-RPC 接口
+
+| 方法 | 用途 |
+|------|------|
+| `main.set_frequency` | 设置 VFO 频率 (Hz) |
+| `main.get_frequency` | 读取当前 VFO 频率 |
+| `main.get_version` | 检查 FLRig 连接和版本 |
+| `rig.set_modeA` | 设置 VFO A 工作模式 |
+| `rig.get_modeA` | 读取当前模式 |
+| `rig.set_bwA` | 设置 VFO A 滤波器带宽 |
+
+---
+
+## English
 
 A Chrome/Chromium extension that lets you click a frequency on [dxheat.com](https://dxheat.com) and instantly tune your radio via [FLRig](http://www.w1hkj.com/flrig-help/).
 
-Also available as a Firefox extension -- check the [Releases](../../releases) page.
+### Features
 
-## Features
+- One-click tuning from DXHeat spot list
+- Automatic mode switching (CW / SSB / Digital)
+- Per-mode filter bandwidth control
+- Connection status badge (green OK / red !)
+- Status popup showing frequency, mode, FLRig version
+- Test Connection button in Options
+- Full console logging for debugging
 
-- **One-click tuning** -- Click any frequency on dxheat.com to set your VFO
-- **Automatic mode switching** -- CW, SSB/Phone, and Digital modes are mapped to your preferred FLRig mode names
-- **Bandwidth control** -- Automatically sets filter bandwidth per mode (configurable, or set to 0 to skip)
-- **Connection status** -- Toolbar badge shows green "OK" when FLRig is reachable, red "!" when not
-- **Status popup** -- Click the toolbar icon to see current frequency, mode, and FLRig version
-- **Test connection** -- Verify your setup from the Options page without leaving Chrome
-- **Console logging** -- All XML-RPC calls and responses are logged to the browser console for debugging
+### Installation
 
-## How it works
+1. Clone this repo
+2. Go to `chrome://extensions/`, enable Developer mode
+3. Click "Load unpacked" and select this folder
+4. Configure via Options (right-click toolbar icon > Options)
 
-1. The extension injects a click handler on frequency cells at dxheat.com.
-2. When you click a frequency, it sends XML-RPC commands to your local FLRig instance:
-   - `rig.set_modeA` -- sets the operating mode
-   - `rig.set_bwA` -- sets the filter bandwidth (if configured)
-   - `main.set_frequency` -- tunes the VFO
-3. The popup reads back `main.get_frequency`, `rig.get_modeA`, and `main.get_version` for status display.
-
-## Prerequisites
-
-- A transceiver controlled by FLRig
-- FLRig running with XML-RPC enabled (default port: **12345**)
-- Chrome or Chromium (v102+ for Manifest V3 support)
-
-## Installation
-
-1. Download or clone this repository.
-2. Open Chrome and navigate to `chrome://extensions/`.
-3. Enable **Developer mode** (toggle in the upper right).
-4. Click **Load unpacked** and select this folder.
-5. Click the extension's **Options** (or right-click the toolbar icon > Options) to configure.
-
-## Configuration
+### Configuration
 
 | Option | Default | Description |
 |--------|---------|-------------|
-| FLRig URI | `http://127.0.0.1:12345/` | XML-RPC endpoint of your FLRig instance |
-| CW Mode | `CW-L` | Mode name sent for CW spots |
-| CW Bandwidth | `500` | Filter bandwidth in Hz for CW (0 = don't change) |
-| SSB Mode | `USB` | Mode name sent for SSB/Phone spots |
-| SSB Bandwidth | `2400` | Filter bandwidth in Hz for SSB (0 = don't change) |
-| Digital Mode | `DATA-U` | Mode name sent for Digital spots |
-| Digital Bandwidth | `3000` | Filter bandwidth in Hz for Digital (0 = don't change) |
+| FLRig URI | `http://127.0.0.1:12345/` | FLRig XML-RPC endpoint |
+| CW Mode | `CW-L` | Mode for CW spots |
+| CW Bandwidth | `500` | Filter BW in Hz (0 = skip) |
+| SSB Mode | `USB` | Mode for SSB/Phone spots |
+| SSB Bandwidth | `2400` | Filter BW in Hz (0 = skip) |
+| Digital Mode | `DATA-U` | Mode for Digital spots |
+| Digital Bandwidth | `3000` | Filter BW in Hz (0 = skip) |
 
-## Upgrading
-
-Remove the old version from `chrome://extensions/` and load the new one.
-
-## Troubleshooting
-
-- **Red "!" badge**: FLRig is not reachable. Check that FLRig is running and the URI in Options is correct.
-- **Service worker console**: Go to Extensions page > Details > "Inspect views: service worker" to see detailed log messages for every XML-RPC call and response.
-- **Non-loopback address**: If FLRig runs on another machine (e.g. `192.168.x.x`), add that address pattern to `host_permissions` in `manifest.json` and reload the extension.
-- **Test Connection**: Use the button in Options to verify connectivity before going to dxheat.
-
-## FLRig XML-RPC Methods Used
-
-| Method | Purpose |
-|--------|---------|
-| `main.set_frequency` | Set VFO frequency (Hz) |
-| `main.get_frequency` | Read current VFO frequency |
-| `main.get_version` | Check FLRig connectivity and version |
-| `rig.set_modeA` | Set operating mode on VFO A |
-| `rig.get_modeA` | Read current mode |
-| `rig.set_bwA` | Set filter bandwidth on VFO A |
-
-## License
+### License
 
 No explicit license. Originally by DJ7NT (Joerg). Use at your own risk.

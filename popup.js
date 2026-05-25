@@ -1,10 +1,8 @@
 function formatFrequency(hz) {
     const num = parseFloat(hz);
-    if (!isFinite(num) || num === 0) return '---';
-    // FLRig returns frequency in Hz, display as kHz with decimals
+    if (!isFinite(num) || num === 0) return '--';
     const khz = num / 1000;
     if (khz >= 1000) {
-        // Display as MHz for VHF+
         return (khz / 1000).toFixed(4) + ' MHz';
     }
     return khz.toFixed(2) + ' kHz';
@@ -17,17 +15,17 @@ document.addEventListener('DOMContentLoaded', () => {
 
         const statusEl = document.getElementById('conn-status');
         if (response && response.connected) {
-            statusEl.textContent = 'Connected';
+            statusEl.textContent = '已连接';
             statusEl.className = 'value connected';
-            document.getElementById('version').textContent = response.version || '---';
+            document.getElementById('version').textContent = response.version || '--';
             document.getElementById('frequency').textContent = formatFrequency(response.frequency);
-            document.getElementById('mode').textContent = response.mode || '---';
+            document.getElementById('mode').textContent = response.mode || '--';
         } else {
-            statusEl.textContent = 'Disconnected';
+            statusEl.textContent = '未连接';
             statusEl.className = 'value disconnected';
-            document.getElementById('version').textContent = response ? response.version : 'No response';
-            document.getElementById('frequency').textContent = '---';
-            document.getElementById('mode').textContent = '---';
+            document.getElementById('version').textContent = response ? response.version : '无响应';
+            document.getElementById('frequency').textContent = '--';
+            document.getElementById('mode').textContent = '--';
         }
     });
 
