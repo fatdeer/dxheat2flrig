@@ -1,15 +1,23 @@
 document.addEventListener('click', function (event) {
-
     if (!event.target.matches('.frequency')) return;
-
     event.preventDefault();
-    let qrg = event.target.innerText.replace(/[\s|,]/g, '') * 100;
-    let row = event.target.closest('tr');
-    let mode = row.querySelector('.mode.hidden').innerText;
-    let band = row.querySelector('.band.hidden').innerText;
 
-    // Now you have both the frequency (qrg) and the mode values
+    const row = event.target.closest('tr');
+    if (!row) {
+        console.warn('[dxheat2flrig] could not find row for clicked frequency');
+        return;
+    }
+
+    const rawQrg = event.target.innerText.replace(/[\s|,]/g, '');
+    const qrg = parseFloat(rawQrg) * 100;
+    if (!isFinite(qrg)) {
+        console.warn('[dxheat2flrig] could not parse frequency:', event.target.innerText);
+        return;
+    }
+
+    const mode = row.querySelector('.mode.hidden')?.innerText ?? '';
+    const band = row.querySelector('.band.hidden')?.innerText ?? '';
+
     console.log("Frequency: ", qrg, " (", band, "m), Mode: ", mode);
     chrome.runtime.sendMessage({"message": "setVfo", "qrg": qrg, "mode": mode, "band": band});
-
 }, false);

@@ -1,16 +1,14 @@
 {
-  "name": "DJ7NTs dxheat2flrig",
-  "description": "Click on QRG at DXHeat and control ur flrig",
-  "version": "1.0",
+  "name": "DXHeat 一键调频",
+  "description": "在 DXHeat.com 上点击频率，一键控制 FLRig 调谐电台",
+  "version": "1.4",
   "permissions": [
-    "tabs",
     "storage"
   ],
   "content_scripts": [
     {
       "matches": [
-        "https://dxheat.com/*",
-        "http://localhost/*"
+        "https://dxheat.com/*"
       ],
       "js": [
         "content_script.js"
@@ -26,10 +24,21 @@
     "type": "module"
   },
   "host_permissions": [
-    "http://localhost/*"
+    "http://localhost/*",
+    "http://127.0.0.1/*"
   ],
-  "content_security_policy": {
-    "extension_pages": "script-src 'self' http://localhost;  object-src http://localhost;"
+  "action": {
+    "default_icon": {
+      "16": "icons/icon16.png",
+      "48": "icons/icon48.png"
+    },
+    "default_title": "dxheat2flrig",
+    "default_popup": "popup.html"
+  },
+  "icons": {
+    "16": "icons/icon16.png",
+    "48": "icons/icon48.png",
+    "128": "icons/icon128.png"
   },
   "manifest_version": 3
 }
