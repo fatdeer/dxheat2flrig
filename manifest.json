@@ -1,9 +1,8 @@
 {
   "name": "DJ7NTs dxheat2flrig",
   "description": "Click on QRG at DXHeat and control ur flrig",
-  "version": "1.0",
+  "version": "1.1",
   "permissions": [
-    "tabs",
     "storage"
   ],
   "content_scripts": [
@@ -26,10 +25,11 @@
     "type": "module"
   },
   "host_permissions": [
-    "http://localhost/*"
+    "http://localhost/*",
+    "http://127.0.0.1/*"
   ],
   "content_security_policy": {
-    "extension_pages": "script-src 'self' http://localhost;  object-src http://localhost;"
+    "extension_pages": "script-src 'self' http://localhost http://127.0.0.1; object-src http://localhost http://127.0.0.1;"
   },
   "manifest_version": 3
 }
